@@ -13,7 +13,6 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.post('/todos', (req, res) => {
-  console.log(req.body);
 
   const todo = new Todo({
     text: req.body.text,
@@ -25,7 +24,6 @@ app.post('/todos', (req, res) => {
       res.send(doc);
     },
     e => {
-      console.log('There was an error');
       res.status(400).send(e);
     },
   );
@@ -36,7 +34,6 @@ app.get('/todos/:id', (req, res) => {
   const { id } = req.params;
 
   if (!ObjectID.isValid(id)) {
-    console.log('ID not valid');
     return res.status(404).send();
   }
 
@@ -44,10 +41,8 @@ app.get('/todos/:id', (req, res) => {
     .then(todo => {
       if (!todo) {
         res.status(404).send();
-        return console.log('Not found');
       }
 
-      console.log('It has been found');
       res.send({ todo });
     })
     .catch(e => {
@@ -70,18 +65,16 @@ app.delete('/todos/:id', (req, res) => {
   const { id } = req.params;
 
   if (!ObjectID.isValid(id)) {
-    console.log('Id is not valid');
     return res.status(404).send();
   }
 
   Todo.findByIdAndRemove(id)
     .then(todo => {
       if (!todo) {
-        console.log('No doc was found');
         return res.status(404).send();
       }
 
-      res.send(todo);
+      res.send({ todo });
     })
     .catch(e => {
       res.status(400).send();
